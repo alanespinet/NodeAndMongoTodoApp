@@ -1,8 +1,8 @@
 // Third party modules
 const _ = require('lodash');
-var express = require('express');
-var bodyParser = require('body-parser');
-var { ObjectID } = require('mongodb');
+const express = require('express');
+const bodyParser = require('body-parser');
+const { ObjectID } = require('mongodb');
 
 
 // Own modules
@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 // Requests
 
-// POST
+// POST REQUESTS
 app.post('/todos', (req, res) => {
 
   var todo = new Todo({
@@ -32,6 +32,20 @@ app.post('/todos', (req, res) => {
   todo.save().then( (doc) => {
     res.send(doc);
   }, (e) => {
+    res.status(400).send(e);
+  });
+
+});
+
+app.post('/users', (req, res) => {
+
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+
+  user.save().then( (user) => {
+    res.send(user);
+  })
+  .catch( (e) => {
     res.status(400).send(e);
   });
 
@@ -127,6 +141,8 @@ app.patch('/todos/:id', (req, res) => {
   });
 
 });
+
+
 
 // Server listen
 app.listen(port, () => { console.log(`Server running at port ${port}` ); });
